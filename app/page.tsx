@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 const PRICING_MATRIX = {
   tiers: [
@@ -26,14 +27,18 @@ function PricingCard({ tier, currency, isAnnual }: {
   
   return (
     <div className="bg-slate-800 p-6 rounded-xl border border-orange-500/20 hover:border-orange-500/50 transition-all duration-300">
-      <h3 className="text-xl text-yellow-400">{tier.name}</h3>
+      <div className="flex items-center gap-3 mb-2">
+        <Image src="/icons/arrow-trending-up.svg" alt="" width={24} height={24} className="text-yellow-400" />
+        <h3 className="text-xl text-yellow-400">{tier.name}</h3>
+      </div>
       <p className="text-slate-300 text-sm mt-1">{tier.desc}</p>
       <p className="text-4xl font-bold text-white mt-4">
         {symbol}{price}
         <span className="text-base text-slate-300">/{isAnnual? 'yr' : 'mo'}</span>
       </p>
-      <button className="w-full mt-6 bg-orange-500 text-slate-900 font-bold py-3 rounded-lg hover:bg-yellow-400 transition-colors duration-150">
+      <button className="w-full mt-6 bg-orange-500 text-slate-900 font-bold py-3 rounded-lg hover:bg-yellow-400 transition-colors duration-150 flex items-center justify-center gap-2">
         Get Started
+        <Image src="/icons/chevron-right.svg" alt="" width={16} height={16} />
       </button>
     </div>
   );
@@ -51,9 +56,9 @@ function BentoAccordion() {
   }, []);
 
   const features = [
-    { title: 'Data Ingestion', desc: 'Automated pipeline setup with zero-config connectors' },
-    { title: 'AI Modeling', desc: 'Custom model training on your private datasets' },
-    { title: 'Real-time Sync', desc: 'Sub-500ms updates across all your tools' }
+    { title: 'Data Ingestion', desc: 'Automated pipeline setup with zero-config connectors', icon: 'arrow-path.svg' },
+    { title: 'AI Modeling', desc: 'Custom model training on your private datasets', icon: 'cube-16-solid.svg' },
+    { title: 'Real-time Sync', desc: 'Sub-500ms updates across all your tools', icon: 'chart-pie.svg' }
   ];
 
   if (isMobile) {
@@ -63,9 +68,11 @@ function BentoAccordion() {
           <div key={i} className="border border-orange-500/30 rounded-lg overflow-hidden">
             <button 
               onClick={() => setActiveIndex(i)} 
-              className="w-full p-4 text-left text-white bg-slate-800 hover:bg-slate-700 transition-colors"
+              className="w-full p-4 text-left text-white bg-slate-800 hover:bg-slate-700 transition-colors flex items-center gap-3"
             >
+              <Image src={`/icons/${f.icon}`} alt="" width={20} height={20} />
               {f.title}
+              <Image src="/icons/chevron-down.svg" alt="" width={16} height={16} className="ml-auto" />
             </button>
             {activeIndex === i && (
               <div className="p-4 pt-2 text-slate-300 bg-slate-900/50 text-sm">{f.desc}</div>
@@ -84,11 +91,14 @@ function BentoAccordion() {
           onMouseEnter={() => setActiveIndex(i)}
           className={`p-6 rounded-xl transition-all duration-300 cursor-pointer ${
             activeIndex === i 
-         ? 'bg-orange-500 text-slate-900 scale-105' 
+        ? 'bg-orange-500 text-slate-900 scale-105' 
               : 'bg-slate-800 text-white hover:bg-slate-700'
           }`}
         >
-          <h3 className="text-lg">{f.title}</h3>
+          <div className="flex items-center gap-3 mb-3">
+            <Image src={`/icons/${f.icon}`} alt="" width={24} height={24} />
+            <h3 className="text-lg">{f.title}</h3>
+          </div>
           <p className="text-sm mt-2 opacity-90">{f.desc}</p>
         </div>
       ))}
@@ -103,6 +113,10 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-900">
       <header className="max-w-6xl mx-auto px-6 pt-20 pb-16">
+        <div className="flex items-center gap-4 mb-6">
+          <Image src="/icons/cog-8-tooth.svg" alt="Logo" width={40} height={40} className="text-orange-500" />
+          <span className="text-2xl font-bold text-white">AI Data Platform</span>
+        </div>
         <h1 className="text-5xl md:text-7xl text-white leading-tight">
           Build The <span className="text-orange-500">Future</span> of Data
         </h1>
@@ -112,28 +126,39 @@ export default function Home() {
       </header>
 
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-3xl text-white mb-8">Core Features</h2>
+        <h2 className="text-3xl text-white mb-8 flex items-center gap-3">
+          <Image src="/icons/cube-16-solid.svg" alt="" width={28} height={28} />
+          Core Features
+        </h2>
         <BentoAccordion />
       </section>
 
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-3xl text-white mb-8">Matrix-Driven Pricing</h2>
+        <h2 className="text-3xl text-white mb-8 flex items-center gap-3">
+          <Image src="/icons/chart-pie.svg" alt="" width={28} height={28} />
+          Matrix-Driven Pricing
+        </h2>
         
         <div className="flex flex-wrap gap-4 mb-8">
-          <select 
-            value={currency} 
-            onChange={(e) => setCurrency(e.target.value as Currency)} 
-            className="bg-slate-800 text-white p-3 rounded-lg border border-orange-500/30 focus:border-orange-500 outline-none"
-          >
-            <option value="USD">USD ($)</option>
-            <option value="INR">INR (₹)</option>
-            <option value="EUR">EUR (€)</option>
-          </select>
+          <div className="relative flex items-center">
+            <Image src="/icons/search.svg" alt="" width={16} height={16} className="absolute left-3 pointer-events-none" />
+            <select 
+              value={currency} 
+              onChange={(e) => setCurrency(e.target.value as Currency)} 
+              className="bg-slate-800 text-white pl-10 pr-4 py-3 rounded-lg border border-orange-500/30 focus:border-orange-500 outline-none appearance-none"
+            >
+              <option value="USD">USD ($)</option>
+              <option value="INR">INR (₹)</option>
+              <option value="EUR">EUR (€)</option>
+            </select>
+            <Image src="/icons/chevron-down.svg" alt="" width={16} height={16} className="absolute right-3 pointer-events-none" />
+          </div>
           
           <button 
             onClick={() => setIsAnnual(!isAnnual)} 
-            className="bg-orange-500 text-slate-900 px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors duration-150"
+            className="bg-orange-500 text-slate-900 px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors duration-150 flex items-center gap-2"
           >
+            <Image src="/icons/arrow-path.svg" alt="" width={18} height={18} />
             {isAnnual? 'Annual Billing - Save 20%' : 'Monthly Billing'}
           </button>
         </div>
@@ -146,6 +171,10 @@ export default function Home() {
       </section>
 
       <footer className="max-w-6xl mx-auto px-6 py-12 text-center text-slate-400 text-sm">
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <Image src="/icons/link.svg" alt="" width={16} height={16} />
+          <Image src="/icons/x-mark.svg" alt="" width={16} height={16} />
+        </div>
         <p>© 2026 AI Data Platform. Frontend Battle R1 Submission.</p>
       </footer>
     </main>
