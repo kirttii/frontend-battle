@@ -9,12 +9,15 @@ const PRICING_MATRIX = {
   ],
   currencies: { INR: 83, USD: 1, EUR: 0.92 },
   annualDiscount: 0.8
-};
+} as const;
+
+type Currency = keyof typeof PRICING_MATRIX.currencies;
+type Tier = typeof PRICING_MATRIX.tiers[number];
 
 function PricingCard({ tier, currency, isAnnual }: { 
-  tier: any, 
-  currency: 'USD' | 'INR' | 'EUR', 
-  isAnnual: boolean 
+  tier: Tier; 
+  currency: Currency; 
+  isAnnual: boolean;
 }) {
   const price = Math.round(
     tier.base * PRICING_MATRIX.currencies[currency] * (isAnnual? PRICING_MATRIX.annualDiscount : 1)
@@ -22,14 +25,14 @@ function PricingCard({ tier, currency, isAnnual }: {
   const symbol = { INR: '₹', USD: '$', EUR: '€' }[currency];
   
   return (
-    <div className="bg-nocturnal p-6 rounded-xl border border-saffron/20 hover:border-saffron/50 transition-all duration-300">
-      <h3 className="font-jetbrains text-xl text-forsythia">{tier.name}</h3>
-      <p className="text-mint/80 text-sm mt-1 font-inter">{tier.desc}</p>
-      <p className="text-4xl font-bold text-arctic mt-4 font-inter">
+    <div className="bg-slate-800 p-6 rounded-xl border border-orange-500/20 hover:border-orange-500/50 transition-all duration-300">
+      <h3 className="text-xl text-yellow-400">{tier.name}</h3>
+      <p className="text-slate-300 text-sm mt-1">{tier.desc}</p>
+      <p className="text-4xl font-bold text-white mt-4">
         {symbol}{price}
-        <span className="text-base text-mint">/{isAnnual? 'yr' : 'mo'}</span>
+        <span className="text-base text-slate-300">/{isAnnual? 'yr' : 'mo'}</span>
       </p>
-      <button className="w-full mt-6 bg-saffron text-oceanic font-jetbrains py-3 rounded-lg hover:bg-forsythia transition-colors duration-150">
+      <button className="w-full mt-6 bg-orange-500 text-slate-900 font-bold py-3 rounded-lg hover:bg-yellow-400 transition-colors duration-150">
         Get Started
       </button>
     </div>
@@ -57,15 +60,15 @@ function BentoAccordion() {
     return (
       <div className="space-y-3">
         {features.map((f, i) => (
-          <div key={i} className="border border-saffron/30 rounded-lg overflow-hidden">
+          <div key={i} className="border border-orange-500/30 rounded-lg overflow-hidden">
             <button 
               onClick={() => setActiveIndex(i)} 
-              className="w-full p-4 text-left font-jetbrains text-arctic bg-nocturnal hover:bg-nocturnal/80 transition-colors"
+              className="w-full p-4 text-left text-white bg-slate-800 hover:bg-slate-700 transition-colors"
             >
               {f.title}
             </button>
             {activeIndex === i && (
-              <div className="p-4 pt-2 text-mint bg-oceanic/50 font-inter text-sm">{f.desc}</div>
+              <div className="p-4 pt-2 text-slate-300 bg-slate-900/50 text-sm">{f.desc}</div>
             )}
           </div>
         ))}
@@ -81,12 +84,12 @@ function BentoAccordion() {
           onMouseEnter={() => setActiveIndex(i)}
           className={`p-6 rounded-xl transition-all duration-300 cursor-pointer ${
             activeIndex === i 
-            ? 'bg-saffron text-oceanic scale-105' 
-              : 'bg-nocturnal text-arctic hover:bg-nocturnal/80'
+         ? 'bg-orange-500 text-slate-900 scale-105' 
+              : 'bg-slate-800 text-white hover:bg-slate-700'
           }`}
         >
-          <h3 className="font-jetbrains text-lg">{f.title}</h3>
-          <p className="text-sm mt-2 font-inter opacity-90">{f.desc}</p>
+          <h3 className="text-lg">{f.title}</h3>
+          <p className="text-sm mt-2 opacity-90">{f.desc}</p>
         </div>
       ))}
     </div>
@@ -94,33 +97,33 @@ function BentoAccordion() {
 }
 
 export default function Home() {
-  const [currency, setCurrency] = useState<'USD' | 'INR' | 'EUR'>('USD');
+  const [currency, setCurrency] = useState<Currency>('USD');
   const [isAnnual, setIsAnnual] = useState(false);
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-slate-900">
       <header className="max-w-6xl mx-auto px-6 pt-20 pb-16">
-        <h1 className="font-jetbrains text-5xl md:text-7xl text-arctic leading-tight">
-          Build The <span className="text-saffron">Future</span> of Data
+        <h1 className="text-5xl md:text-7xl text-white leading-tight">
+          Build The <span className="text-orange-500">Future</span> of Data
         </h1>
-        <p className="text-mint text-lg mt-6 max-w-2xl font-inter">
+        <p className="text-slate-300 text-lg mt-6 max-w-2xl">
           Premium AI-driven automation with matrix-driven pricing and responsive bento features.
         </p>
       </header>
 
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="font-jetbrains text-3xl text-arctic mb-8">Core Features</h2>
+        <h2 className="text-3xl text-white mb-8">Core Features</h2>
         <BentoAccordion />
       </section>
 
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="font-jetbrains text-3xl text-arctic mb-8">Matrix-Driven Pricing</h2>
+        <h2 className="text-3xl text-white mb-8">Matrix-Driven Pricing</h2>
         
         <div className="flex flex-wrap gap-4 mb-8">
           <select 
             value={currency} 
-            onChange={(e) => setCurrency(e.target.value as any)} 
-            className="bg-nocturnal text-arctic p-3 rounded-lg border border-saffron/30 font-inter focus:border-saffron outline-none"
+            onChange={(e) => setCurrency(e.target.value as Currency)} 
+            className="bg-slate-800 text-white p-3 rounded-lg border border-orange-500/30 focus:border-orange-500 outline-none"
           >
             <option value="USD">USD ($)</option>
             <option value="INR">INR (₹)</option>
@@ -129,7 +132,7 @@ export default function Home() {
           
           <button 
             onClick={() => setIsAnnual(!isAnnual)} 
-            className="bg-saffron text-oceanic px-6 py-3 rounded-lg font-jetbrains hover:bg-forsythia transition-colors duration-150"
+            className="bg-orange-500 text-slate-900 px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors duration-150"
           >
             {isAnnual? 'Annual Billing - Save 20%' : 'Monthly Billing'}
           </button>
@@ -142,7 +145,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="max-w-6xl mx-auto px-6 py-12 text-center text-mint/60 font-inter text-sm">
+      <footer className="max-w-6xl mx-auto px-6 py-12 text-center text-slate-400 text-sm">
         <p>© 2026 AI Data Platform. Frontend Battle R1 Submission.</p>
       </footer>
     </main>
